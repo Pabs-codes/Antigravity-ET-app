@@ -3,139 +3,273 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../../providers/transaction_provider.dart';
 import '../../../data/models/transaction_type.dart';
+import '../../../core/app_theme.dart';
+import '../add_transaction/add_transaction_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-      ),
-      body: Consumer<TransactionProvider>(
-        builder: (context, provider, child) {
-          final currency = NumberFormat.simpleCurrency(decimalDigits: 0);
+    // Currency format
+    final currency = NumberFormat.simpleCurrency(decimalDigits: 0);
 
-          return RefreshIndicator(
-            onRefresh: () async => provider.loadData(),
-            child: ListView(
-              padding: const EdgeInsets.all(16.0),
-              children: [
-                // Balance Card
-                Card(
-                  elevation: 2,
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+    return Scaffold(
+      backgroundColor: AppTheme.backgroundLight,
+      body: SafeArea(
+        bottom: false, // Let list scroll behind floating nav
+        child: Consumer<TransactionProvider>(
+          builder: (context, provider, child) {
+            return RefreshIndicator(
+              onRefresh: () async => provider.loadData(),
+              child: ListView(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 100), // Bottom padding for floating nav
+                children: [
+                   // Header / Greeting
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Welcome Back,',
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          Text(
+                            'My Financials',
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // Profile or Notification Icon placeholer
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                           color: Colors.white,
+                           shape: BoxShape.circle,
+                           border: Border.all(color: Colors.grey.shade200),
+                        ),
+                        child: const Icon(Icons.notifications_none_rounded, color: Colors.black),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Dark Balance Card
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: AppTheme.accentDark,
+                      borderRadius: BorderRadius.circular(32),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.accentDark.withOpacity(0.4),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Current Balance',
-                            style: Theme.of(context).textTheme.titleMedium),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Icon(Icons.wallet_rounded, color: Colors.white70),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: const Text(
+                                'Main Wallet',
+                                style: TextStyle(color: Colors.white70, fontSize: 12),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Total Balance',
+                          style: TextStyle(color: Colors.white60, fontSize: 14),
+                        ),
                         const SizedBox(height: 8),
                         Text(
                           currency.format(provider.currentBalance),
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall
-                              ?.copyWith(fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Poppins', 
+                          ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 24),
+                        
+                        // Action Buttons Row (Add, etc)
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _SummaryItem(
-                              label: 'Income',
-                              amount: provider.totalIncome,
-                              isIncome: true,
-                              currency: currency,
+                            _ActionButton(
+                              icon: Icons.add,
+                              label: 'Add',
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
+                                );
+                              },
                             ),
-                            _SummaryItem(
-                              label: 'Expense',
-                              amount: provider.totalExpenses,
-                              isIncome: false,
-                              currency: currency,
+                            _ActionButton(
+                              icon: Icons.arrow_outward_rounded,
+                              label: 'Transfer',
+                              onTap: () {}, // Placeholder
+                            ),
+                            _ActionButton(
+                              icon: Icons.history_rounded,
+                              label: 'History',
+                              onTap: () {}, // Placeholder (or scroll down)
+                            ),
+                             _ActionButton(
+                              icon: Icons.more_horiz_rounded,
+                              label: 'More',
+                              onTap: () {}, // Placeholder
                             ),
                           ],
                         ),
                       ],
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Text('Recent Transactions',
-                    style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 10),
-                
-                // Transaction List
-                if (provider.transactions.isEmpty)
-                  const Center(child: Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Text('No transactions yet'),
-                  ))
-                else
-                  ...provider.transactions.map((tx) {
-                    final isExpense = tx.type == TransactionType.expense;
-                    return Card(
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: isExpense
-                              ? Colors.red.withOpacity(0.1)
-                              : Colors.green.withOpacity(0.1),
-                          child: Icon(
-                            isExpense ? Icons.arrow_downward : Icons.arrow_upward,
-                            color: isExpense ? Colors.red : Colors.green,
-                          ),
-                        ),
-                        title: Text(tx.title),
-                        subtitle: Text(DateFormat.yMMMd().format(tx.date)),
-                        trailing: Text(
-                          currency.format(tx.amount),
-                          style: TextStyle(
-                            color: isExpense ? Colors.red : Colors.green,
-                            fontWeight: FontWeight.bold,
-                          ),
+
+                  const SizedBox(height: 30),
+
+                  // Transactions Header
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Recent Transactions',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    );
-                  }),
-              ],
-            ),
-          );
-        },
+                      TextButton(
+                        onPressed: () {}, 
+                        child: const Text('View All'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Transaction List
+                  if (provider.transactions.isEmpty)
+                   Container(
+                     padding: const EdgeInsets.all(40),
+                     alignment: Alignment.center,
+                     child: Column(
+                       children: [
+                         Icon(Icons.receipt_long_rounded, size: 60, color: Colors.grey[300]),
+                         const SizedBox(height: 10),
+                         Text('No transactions yet', style: TextStyle(color: Colors.grey[500])),
+                       ],
+                     ),
+                   )
+                  else
+                    ...provider.transactions.take(10).map((tx) {
+                      final isExpense = tx.type == TransactionType.expense;
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          leading: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: isExpense 
+                                  ? Colors.red.withOpacity(0.1) 
+                                  : AppTheme.accentGreen.withOpacity(0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              isExpense ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
+                              color: isExpense ? Colors.red : AppTheme.accentGreen,
+                              size: 20,
+                            ),
+                          ),
+                          title: Text(
+                            tx.title, 
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            DateFormat('MMM d, y').format(tx.date),
+                            style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                          ),
+                          trailing: Text(
+                            '${isExpense ? "-" : "+"}${currency.format(tx.amount)}',
+                            style: TextStyle(
+                              color: isExpense ? Colors.red : AppTheme.accentGreen,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 }
 
-class _SummaryItem extends StatelessWidget {
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
   final String label;
-  final double amount;
-  final bool isIncome;
-  final NumberFormat currency;
+  final VoidCallback onTap;
 
-  const _SummaryItem({
-    required this.label,
-    required this.amount,
-    required this.isIncome,
-    required this.currency,
-  });
+  const _ActionButton({required this.icon, required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(label, style: Theme.of(context).textTheme.bodyMedium),
-        const SizedBox(height: 4),
-        Text(
-          currency.format(amount),
-          style: TextStyle(
-            color: isIncome ? Colors.green : Colors.red,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: AppTheme.accentDark, size: 22),
           ),
-        ),
-      ],
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white70, fontSize: 12),
+          ),
+        ],
+      ),
     );
   }
 }

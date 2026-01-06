@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/stats/stats_screen.dart';
-import 'screens/add_transaction/add_transaction_screen.dart';
 import 'screens/settings/settings_screen.dart';
+import '../core/app_theme.dart';
 
 class MainWrapper extends StatefulWidget {
   const MainWrapper({super.key});
@@ -23,40 +23,62 @@ class _MainWrapperState extends State<MainWrapper> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        destinations: const <NavigationDestination>[
-          NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard),
-            label: 'Dashboard',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.pie_chart_outline),
-            selectedIcon: Icon(Icons.pie_chart),
-            label: 'Stats',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
-            label: 'Settings',
+      extendBody: true, // Content goes behind navbar
+      body: Stack(
+        children: [
+          // Main Content
+          _screens[_selectedIndex],
+          
+          // Floating Bottom Navigation Bar
+          Positioned(
+            left: 24,
+            right: 24,
+            bottom: 24,
+            child: Container(
+              height: 70,
+              decoration: BoxDecoration(
+                color: AppTheme.accentDark,
+                borderRadius: BorderRadius.circular(35),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildNavItem(0, Icons.grid_view_rounded), // Dashboard
+                  _buildNavItem(1, Icons.pie_chart_rounded), // Stats
+                  _buildNavItem(2, Icons.settings_rounded), // Settings
+                ],
+              ),
+            ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
-          );
-        },
-        child: const Icon(Icons.add),
+    );
+  }
+
+  Widget _buildNavItem(int index, IconData icon) {
+    bool isSelected = _selectedIndex == index;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedIndex = index),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: isSelected 
+            ? BoxDecoration(
+                color: Colors.white.withOpacity(0.15),
+                shape: BoxShape.circle,
+              )
+            : null,
+        child: Icon(
+          icon,
+          color: Colors.white,
+          size: 28,
+        ),
       ),
     );
   }

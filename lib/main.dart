@@ -5,6 +5,7 @@ import 'providers/transaction_provider.dart';
 import 'providers/settings_provider.dart';
 import 'ui/main_wrapper.dart';
 import 'ui/screens/auth/auth_check_screen.dart';
+import 'core/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,10 +30,8 @@ class MyApp extends StatelessWidget {
         builder: (context, settings, _) {
           return MaterialApp(
             title: 'Offline Financial Tracker',
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal, brightness: settings.isDarkMode ? Brightness.dark : Brightness.light),
-              useMaterial3: true,
-            ),
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme, // Use custom theme
             home: const AuthCheckScreen(),
           );
         }
