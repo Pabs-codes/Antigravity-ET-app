@@ -28,7 +28,7 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         color: surfaceWhite,
-        elevation: 0, // We will use manual shadows for "soft" look
+        elevation: 0, 
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         margin: EdgeInsets.zero,
       ),
@@ -54,6 +54,61 @@ class AppTheme {
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: accentDark,
         foregroundColor: Colors.white,
+      ),
+    );
+  }
+
+  static ThemeData get darkTheme {
+    return ThemeData(
+      useMaterial3: true,
+      scaffoldBackgroundColor: const Color(0xFF121212),
+      colorScheme: const ColorScheme.dark(
+        primary: accentGreen, // Green stands out on dark
+        secondary: accentGreen,
+        surface: Color(0xFF1E1E1E),
+        background: Color(0xFF121212),
+        onBackground: Colors.white,
+        onSurface: Colors.white,
+      ),
+      textTheme: GoogleFonts.poppinsTextTheme().apply(
+        bodyColor: Colors.white,
+        displayColor: Colors.white,
+      ),
+      cardTheme: CardThemeData(
+        color: const Color(0xFF1E1E1E),
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        margin: EdgeInsets.zero,
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: const Color(0xFF121212),
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: GoogleFonts.poppins(
+          color: Colors.white,
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: accentGreen,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        ),
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: accentGreen,
+        foregroundColor: Colors.white,
+      ),
+      iconTheme: const IconThemeData(color: Colors.white),
+      inputDecorationTheme: const InputDecorationTheme(
+        labelStyle: TextStyle(color: Colors.white70),
+        hintStyle: TextStyle(color: Colors.white38),
+        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: accentGreen)),
       ),
     );
   }

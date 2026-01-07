@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../../providers/transaction_provider.dart';
+import '../../../providers/settings_provider.dart';
 import '../../../data/models/transaction_type.dart';
 import '../../../core/app_theme.dart';
 
@@ -114,7 +115,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currency = NumberFormat.simpleCurrency(decimalDigits: 0);
+    final settings = Provider.of<SettingsProvider>(context);
+    final currency = NumberFormat.simpleCurrency(name: settings.currencyCode, decimalDigits: 0);
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundLight,

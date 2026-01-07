@@ -60,9 +60,16 @@ class HiveService {
   
   Future<void> _seedDefaultCategories() async {
     final defaults = [
-      CategoryModel(id: 'food', name: 'Food', iconCode: 'fastfood', budgetLimit: 500, colorValue: 0xFFFF5722),
-      CategoryModel(id: 'transport', name: 'Transport', iconCode: 'directions_bus', budgetLimit: 200, colorValue: 0xFF2196F3),
-      CategoryModel(id: 'shopping', name: 'Shopping', iconCode: 'shopping_bag', budgetLimit: 300, colorValue: 0xFF9C27B0),
+      CategoryModel(id: 'food', name: 'Food', iconCode: '0xe532', budgetLimit: 500, colorValue: 0xFFFF5722), // fastfood
+      CategoryModel(id: 'groceries', name: 'Groceries', iconCode: '0xe8cc', budgetLimit: 400, colorValue: 0xFF4CAF50), // shopping_cart
+      CategoryModel(id: 'transport', name: 'Transport', iconCode: '0xe530', budgetLimit: 200, colorValue: 0xFF2196F3), // directions_bus
+      CategoryModel(id: 'rent', name: 'Rent', iconCode: '0xe88a', budgetLimit: 1000, colorValue: 0xFF795548), // home
+      CategoryModel(id: 'utilities', name: 'Utilities', iconCode: '0xe3a8', budgetLimit: 150, colorValue: 0xFFFFC107), // lightbulb
+      CategoryModel(id: 'healthcare', name: 'Healthcare', iconCode: '0xe3ae', budgetLimit: 200, colorValue: 0xFFF44336), // local_hospital
+      CategoryModel(id: 'shopping', name: 'Shopping', iconCode: '0xe8f6', budgetLimit: 300, colorValue: 0xFF9C27B0), // shopping_bag
+      CategoryModel(id: 'entertainment', name: 'Entertainment', iconCode: '0xe406', budgetLimit: 150, colorValue: 0xFF3F51B5), // movie
+      CategoryModel(id: 'education', name: 'Education', iconCode: '0xe80c', budgetLimit: 500, colorValue: 0xFF009688), // school
+      CategoryModel(id: 'misc', name: 'Miscellaneous', iconCode: '0xeac6', budgetLimit: 100, colorValue: 0xFF607D8B), // category
     ];
     
     for (var cat in defaults) {

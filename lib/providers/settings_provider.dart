@@ -10,9 +10,11 @@ class SettingsProvider with ChangeNotifier {
 
   static const String _usernameKey = 'username';
   static const String _pinCodeKey = 'pinCode';
+  static const String _currencyKey = 'currency';
 
   bool get isDarkMode => _box.get(_darkModeKey, defaultValue: false);
   bool get isBiometricsEnabled => _box.get(_biometricsKey, defaultValue: false);
+  String get currencyCode => _box.get(_currencyKey, defaultValue: 'USD');
   
   String? get username => _box.get(_usernameKey);
   String? get pinCode => _box.get(_pinCodeKey);
@@ -25,6 +27,11 @@ class SettingsProvider with ChangeNotifier {
 
   Future<void> toggleBiometrics(bool value) async {
     await _box.put(_biometricsKey, value);
+    notifyListeners();
+  }
+
+  Future<void> setCurrency(String code) async {
+    await _box.put(_currencyKey, code);
     notifyListeners();
   }
 

@@ -50,6 +50,7 @@ class TransactionProvider with ChangeNotifier {
     loadData();
   }
 
+
   Future<void> updateCategoryBudget(String id, double newLimit) async {
     final index = _categories.indexWhere((c) => c.id == id);
     if (index != -1) {

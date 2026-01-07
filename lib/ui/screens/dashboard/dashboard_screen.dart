@@ -7,6 +7,7 @@ import '../../../core/app_theme.dart';
 import '../add_transaction/add_transaction_screen.dart';
 import 'history_screen.dart';
 import '../settings/settings_screen.dart';
+import '../../../providers/settings_provider.dart';
 import '../../../core/services/csv_service.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -16,7 +17,9 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Currency format
-    final currency = NumberFormat.simpleCurrency(decimalDigits: 0);
+    // Currency format
+    final settings = Provider.of<SettingsProvider>(context);
+    final currency = NumberFormat.simpleCurrency(name: settings.currencyCode, decimalDigits: 0);
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundLight,

@@ -31,7 +31,9 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Offline Financial Tracker',
             debugShowCheckedModeBanner: false,
-            theme: AppTheme.lightTheme, // Use custom theme
+            theme: AppTheme.lightTheme, 
+            darkTheme: AppTheme.darkTheme,
+            themeMode: settings.isDarkMode ? ThemeMode.dark : ThemeMode.light,
             home: const AuthCheckScreen(),
           );
         }
