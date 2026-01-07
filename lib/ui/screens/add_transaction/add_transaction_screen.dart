@@ -28,6 +28,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     final provider = Provider.of<TransactionProvider>(context);
     final categories = provider.categories; // Ensure categories are loaded
 
+    final typeString = _type == TransactionType.expense ? 'expense' : 'income';
+    final filteredCategories = categories.where((cat) => cat.type == typeString).toList();
+
     return Scaffold(
       appBar: AppBar(title: const Text('Add Transaction')),
       body: SingleChildScrollView(
@@ -76,6 +79,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 onSelectionChanged: (Set<TransactionType> newSelection) {
                   setState(() {
                     _type = newSelection.first;
+                    _categoryId = null; // Reset category when type changes
                   });
                 },
                 style: ButtonStyle(
@@ -96,7 +100,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 value: _categoryId,
                 decoration: const InputDecoration(labelText: 'Category'),
                 items: [
-                  ...categories.map((cat) {
+                  ...filteredCategories.map((cat) {
                     return DropdownMenuItem(
                       value: cat.id, 
                       child: Row(
@@ -121,7 +125,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ],
                 onChanged: (val) {
                   if (val == 'add_new_custom_category') {
-                    _showAddCategoryDialog();
+                    _showAddCategoryDialog(typeString);
                   } else {
                     setState(() => _categoryId = val);
                   }
@@ -179,7 +183,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     }
   }
 
-  void _showAddCategoryDialog() {
+  void _showAddCategoryDialog(String type) {
     final nameController = TextEditingController();
     int selectedColor = 0xFF4CAF50;
 
@@ -236,7 +240,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         name: nameController.text.trim(),
                         iconCode: '0xeac6', 
                         budgetLimit: 0, 
-                        colorValue: selectedColor
+                        colorValue: selectedColor,
+                        type: type, // Use passed type
                       );
                       await Provider.of<TransactionProvider>(context, listen: false).addCategory(newCat); 
                       // Auto select the new category

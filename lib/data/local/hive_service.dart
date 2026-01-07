@@ -59,20 +59,29 @@ class HiveService {
   }
   
   Future<void> _seedDefaultCategories() async {
-    final defaults = [
-      CategoryModel(id: 'food', name: 'Food', iconCode: '0xe532', budgetLimit: 500, colorValue: 0xFFFF5722), // fastfood
-      CategoryModel(id: 'groceries', name: 'Groceries', iconCode: '0xe8cc', budgetLimit: 400, colorValue: 0xFF4CAF50), // shopping_cart
-      CategoryModel(id: 'transport', name: 'Transport', iconCode: '0xe530', budgetLimit: 200, colorValue: 0xFF2196F3), // directions_bus
-      CategoryModel(id: 'rent', name: 'Rent', iconCode: '0xe88a', budgetLimit: 1000, colorValue: 0xFF795548), // home
-      CategoryModel(id: 'utilities', name: 'Utilities', iconCode: '0xe3a8', budgetLimit: 150, colorValue: 0xFFFFC107), // lightbulb
-      CategoryModel(id: 'healthcare', name: 'Healthcare', iconCode: '0xe3ae', budgetLimit: 200, colorValue: 0xFFF44336), // local_hospital
-      CategoryModel(id: 'shopping', name: 'Shopping', iconCode: '0xe8f6', budgetLimit: 300, colorValue: 0xFF9C27B0), // shopping_bag
-      CategoryModel(id: 'entertainment', name: 'Entertainment', iconCode: '0xe406', budgetLimit: 150, colorValue: 0xFF3F51B5), // movie
-      CategoryModel(id: 'education', name: 'Education', iconCode: '0xe80c', budgetLimit: 500, colorValue: 0xFF009688), // school
-      CategoryModel(id: 'misc', name: 'Miscellaneous', iconCode: '0xeac6', budgetLimit: 100, colorValue: 0xFF607D8B), // category
+    final expenseDefaults = [
+      CategoryModel(id: 'food', name: 'Food', iconCode: '0xe532', budgetLimit: 500, colorValue: 0xFFFF5722, type: 'expense'),
+      CategoryModel(id: 'groceries', name: 'Groceries', iconCode: '0xe8cc', budgetLimit: 400, colorValue: 0xFF4CAF50, type: 'expense'),
+      CategoryModel(id: 'transport', name: 'Transport', iconCode: '0xe530', budgetLimit: 200, colorValue: 0xFF2196F3, type: 'expense'),
+      CategoryModel(id: 'rent', name: 'Rent', iconCode: '0xe88a', budgetLimit: 1000, colorValue: 0xFF795548, type: 'expense'),
+      CategoryModel(id: 'utilities', name: 'Utilities', iconCode: '0xe3a8', budgetLimit: 150, colorValue: 0xFFFFC107, type: 'expense'),
+      CategoryModel(id: 'healthcare', name: 'Healthcare', iconCode: '0xe3ae', budgetLimit: 200, colorValue: 0xFFF44336, type: 'expense'),
+      CategoryModel(id: 'shopping', name: 'Shopping', iconCode: '0xe8f6', budgetLimit: 300, colorValue: 0xFF9C27B0, type: 'expense'),
+      CategoryModel(id: 'entertainment', name: 'Entertainment', iconCode: '0xe406', budgetLimit: 150, colorValue: 0xFF3F51B5, type: 'expense'),
+      CategoryModel(id: 'education', name: 'Education', iconCode: '0xe80c', budgetLimit: 500, colorValue: 0xFF009688, type: 'expense'),
+      CategoryModel(id: 'misc', name: 'Miscellaneous', iconCode: '0xeac6', budgetLimit: 100, colorValue: 0xFF607D8B, type: 'expense'),
+    ];
+
+    final incomeDefaults = [
+      CategoryModel(id: 'salary', name: 'Salary', iconCode: '0xe250', budgetLimit: 0, colorValue: 0xFF4CAF50, type: 'income'), // attach_money
+      CategoryModel(id: 'business', name: 'Business', iconCode: '0xeb3f', budgetLimit: 0, colorValue: 0xFF2196F3, type: 'income'), // business_center
+      CategoryModel(id: 'other_income', name: 'Other', iconCode: '0xe3c9', budgetLimit: 0, colorValue: 0xFF9C27B0, type: 'income'), // attach_file -> tune ? using misc icon equivalent
     ];
     
-    for (var cat in defaults) {
+    for (var cat in expenseDefaults) {
+      await categoryBox.put(cat.id, cat);
+    }
+    for (var cat in incomeDefaults) {
       await categoryBox.put(cat.id, cat);
     }
   }

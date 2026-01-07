@@ -61,6 +61,7 @@ class TransactionProvider with ChangeNotifier {
         iconCode: old.iconCode,
         budgetLimit: newLimit,
         colorValue: old.colorValue,
+        type: old.type,
       );
       await _hiveService.addCategory(newCat); // Overwrite
       loadData();

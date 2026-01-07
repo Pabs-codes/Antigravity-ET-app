@@ -19,11 +19,15 @@ class CategoryModel {
   @HiveField(4)
   final int colorValue; // Storing Color as int (0xAARRGGBB)
 
+  @HiveField(5)
+  final String type; // 'expense' or 'income'
+
   CategoryModel({
     required this.id,
     required this.name,
     required this.iconCode,
     required this.budgetLimit,
     required this.colorValue,
+    this.type = 'expense', // Default for backward compatibility
   });
 }
