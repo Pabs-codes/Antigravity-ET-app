@@ -16,11 +16,16 @@ class SettingsScreen extends StatelessWidget {
       builder: (context) {
         return SimpleDialog(
           title: const Text('Select Currency'),
-          children: ['USD', 'EUR', 'GBP', 'INR', 'JPY', 'CAD', 'AUD'].map((code) {
+          children: [
+            'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'CNY', 'INR',
+            'SGD', 'NZD', 'SEK', 'NOK', 'DKK', 'ZAR', 'MYR', 'HKD', 'KRW',
+            'AED', 'LKR'
+          ].map((code) {
+            final symbol = SettingsProvider.currencySymbols[code] ?? '';
             return SimpleDialogOption(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text(code, style: const TextStyle(fontSize: 16)),
+                child: Text('$code - $symbol', style: const TextStyle(fontSize: 16)),
               ),
               onPressed: () {
                 Provider.of<SettingsProvider>(context, listen: false).setCurrency(code);

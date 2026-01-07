@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
+import '../../../providers/settings_provider.dart';
 import '../../../providers/transaction_provider.dart';
 import '../../../data/models/transaction_type.dart';
 import '../../../core/app_theme.dart';
@@ -40,6 +41,9 @@ class StatsScreen extends StatelessWidget {
   }
 
   Widget _buildBarChart(BuildContext context) {
+    final settings = Provider.of<SettingsProvider>(context);
+    final symbol = settings.currencySymbol;
+
     return Consumer<TransactionProvider>(
       builder: (context, provider, child) {
         final expenses = provider.transactions
@@ -85,7 +89,7 @@ class StatsScreen extends StatelessWidget {
                            return BarTooltipItem(
                              '$catName\n',
                              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                             children: [TextSpan(text: '\$${rod.toY.toStringAsFixed(0)}')],
+                             children: [TextSpan(text: '$symbol${rod.toY.toStringAsFixed(0)}')],
                            );
                         },
                       ),
@@ -143,7 +147,9 @@ class StatsScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 30),
-              // Clean Legend List
+             // Clean Legend List
+             // ... will need to update legend item too in the next chunk if replace_file only handles contiguous blocks
+
               Expanded(
                 child: ListView.separated(
                   itemCount: topEntries.length,
@@ -170,7 +176,7 @@ class StatsScreen extends StatelessWidget {
                           const SizedBox(width: 12),
                           Text(category.name, style: const TextStyle(fontWeight: FontWeight.bold)),
                           const Spacer(),
-                          Text('\$${entry.value.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.w500)),
+                          Text('$symbol${entry.value.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.w500)),
                         ],
                       ),
                     );

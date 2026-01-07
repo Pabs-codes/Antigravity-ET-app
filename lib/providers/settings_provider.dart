@@ -12,9 +12,17 @@ class SettingsProvider with ChangeNotifier {
   static const String _pinCodeKey = 'pinCode';
   static const String _currencyKey = 'currency';
 
+  static const Map<String, String> currencySymbols = {
+    'USD': '\$', 'EUR': '€', 'GBP': '£', 'JPY': '¥', 'AUD': 'A\$', 'CAD': 'C\$',
+    'CHF': 'CHF', 'CNY': '¥', 'INR': '₹', 'SGD': 'S\$', 'NZD': 'NZ\$',
+    'SEK': 'kr', 'NOK': 'kr', 'DKK': 'kr', 'ZAR': 'R', 'MYR': 'RM',
+    'HKD': 'HK\$', 'KRW': '₩', 'AED': 'د.إ', 'LKR': 'Rs'
+  };
+
   bool get isDarkMode => _box.get(_darkModeKey, defaultValue: false);
   bool get isBiometricsEnabled => _box.get(_biometricsKey, defaultValue: false);
   String get currencyCode => _box.get(_currencyKey, defaultValue: 'USD');
+  String get currencySymbol => currencySymbols[currencyCode] ?? '\$';
   
   String? get username => _box.get(_usernameKey);
   String? get pinCode => _box.get(_pinCodeKey);

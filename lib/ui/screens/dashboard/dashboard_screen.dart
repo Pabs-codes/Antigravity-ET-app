@@ -19,7 +19,7 @@ class DashboardScreen extends StatelessWidget {
     // Currency format
     // Currency format
     final settings = Provider.of<SettingsProvider>(context);
-    final currency = NumberFormat.simpleCurrency(name: settings.currencyCode, decimalDigits: 0);
+    final currency = NumberFormat.currency(symbol: settings.currencySymbol, decimalDigits: 0);
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundLight,

@@ -116,7 +116,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final settings = Provider.of<SettingsProvider>(context);
-    final currency = NumberFormat.simpleCurrency(name: settings.currencyCode, decimalDigits: 0);
+    final currency = NumberFormat.currency(symbol: settings.currencySymbol, decimalDigits: 0);
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundLight,
