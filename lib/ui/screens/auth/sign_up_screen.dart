@@ -1,7 +1,8 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../providers/settings_provider.dart';
-import '../../../core/app_theme.dart';
 import 'sign_in_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -11,10 +12,36 @@ class SignUpScreen extends StatefulWidget {
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderStateMixin {
   final _nameController = TextEditingController();
   final _pinController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
@@ -25,7 +52,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           .createAccount(name, pin);
           
       if (mounted) {
-        // Navigate to Sign In (or directly to app, but Sign In confirms flow)
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (_) => const SignInScreen()));
       }
@@ -35,66 +61,184 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Text(
-                  'Welcome!',
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Let\'s set up your secure financial tracker.',
-                  style: TextStyle(color: Colors.grey[600]),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 40),
-                
-                // Name Field
-                TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'First Name',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.person),
-                  ),
-                  validator: (v) => v!.isEmpty ? 'Please enter your name' : null,
-                ),
-                const SizedBox(height: 20),
-                
-                // PIN Field
-                TextFormField(
-                  controller: _pinController,
-                  keyboardType: TextInputType.number,
-                  obscureText: true,
-                  maxLength: 4,
-                  decoration: const InputDecoration(
-                    labelText: 'Create a 4-digit PIN',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.lock),
-                    counterText: "",
-                  ),
-                  validator: (v) => (v!.length != 4) ? 'PIN must be 4 digits' : null,
-                ),
-                const SizedBox(height: 40),
-                
-                FilledButton(
-                  onPressed: _submit,
-                  child: const Text('Create Account'),
-                ),
-              ],
+      body: Stack(
+        children: [
+          // 1. Premium Gradient Background
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF1a1f2c), Color(0xFF121212)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
             ),
           ),
+          
+          // 2. Decorative Blurred Orbs
+           Positioned(
+            bottom: -50,
+            right: -50,
+            child: Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFF4CAF50).withOpacity(0.15),
+              ),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
+                child: Container(color: Colors.transparent),
+              ),
+            ),
+          ),
+
+          SafeArea(
+            child: Center(
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Icon(Icons.account_balance_wallet_rounded, size: 60, color: Colors.white.withOpacity(0.9)),
+                          const SizedBox(height: 20),
+                          Text(
+                            'Welcome!',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            'Let\'s set up your secure financial tracker.',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: Colors.white60,
+                            ),
+                          ),
+                          const SizedBox(height: 40),
+                          
+                          // Glass Container
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(24),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.05),
+                                  borderRadius: BorderRadius.circular(24),
+                                  border: Border.all(color: Colors.white.withOpacity(0.1)),
+                                ),
+                                child: Column(
+                                  children: [
+                                    // Name Field
+                                    _buildGlassInput(
+                                      controller: _nameController,
+                                      label: 'First Name',
+                                      icon: Icons.person_rounded,
+                                      validator: (v) => v!.isEmpty ? 'Please enter your name' : null,
+                                    ),
+                                    const SizedBox(height: 20),
+                                    
+                                    // PIN Field
+                                    _buildGlassInput(
+                                      controller: _pinController,
+                                      label: 'Create 4-digit PIN',
+                                      icon: Icons.lock_rounded,
+                                      isNumber: true,
+                                      isObscure: true,
+                                      maxLength: 4,
+                                      validator: (v) => (v!.length != 4) ? 'PIN must be 4 digits' : null,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 40),
+                          
+                          // Submit Button
+                          ElevatedButton(
+                            onPressed: _submit,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF9b87f5),
+                              padding: const EdgeInsets.symmetric(vertical: 18),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 8,
+                              shadowColor: const Color(0xFF9b87f5).withOpacity(0.5),
+                            ),
+                            child: Text(
+                              'Create Account',
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGlassInput({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    bool isNumber = false,
+    bool isObscure = false,
+    int? maxLength,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+      obscureText: isObscure,
+      maxLength: maxLength,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.white70),
+        prefixIcon: Icon(icon, color: Colors.white70),
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.05),
+        counterText: "",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: const Color(0xFF9b87f5).withOpacity(0.5)),
         ),
       ),
+      validator: validator,
     );
   }
 }

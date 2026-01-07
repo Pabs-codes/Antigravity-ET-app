@@ -125,23 +125,22 @@ class DashboardScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             _ActionButton(
-                              icon: Icons.add,
-                              label: 'Add',
+                              icon: Icons.arrow_downward_rounded,
+                              label: 'Expense',
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
+                                  MaterialPageRoute(builder: (context) => const AddTransactionScreen(initialType: TransactionType.expense)),
                                 );
                               },
                             ),
                             _ActionButton(
-                              icon: Icons.arrow_outward_rounded,
-                              label: 'Transfer',
+                              icon: Icons.arrow_upward_rounded,
+                              label: 'Income',
                               onTap: () {
-                                // For now, transfer is just adding a transaction (maybe link to Add with specific type later)
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
+                                  MaterialPageRoute(builder: (context) => const AddTransactionScreen(initialType: TransactionType.income)),
                                 );
                               },
                             ),

@@ -9,7 +9,9 @@ import '../../../data/models/category_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AddTransactionScreen extends StatefulWidget {
-  const AddTransactionScreen({super.key});
+  final TransactionType? initialType;
+
+  const AddTransactionScreen({super.key, this.initialType});
 
   @override
   State<AddTransactionScreen> createState() => _AddTransactionScreenState();
@@ -32,6 +34,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> with Single
   @override
   void initState() {
     super.initState();
+    if (widget.initialType != null) {
+      _type = widget.initialType!;
+    }
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
