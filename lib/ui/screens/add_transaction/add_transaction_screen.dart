@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../providers/transaction_provider.dart';
 import '../../../data/models/transaction_model.dart';
 import '../../../data/models/transaction_type.dart';
+import '../../../data/models/category_model.dart';
 
 class AddTransactionScreen extends StatefulWidget {
   const AddTransactionScreen({super.key});
@@ -94,23 +95,42 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               DropdownButtonFormField<String>(
                 value: _categoryId,
                 decoration: const InputDecoration(labelText: 'Category'),
-                items: categories.isEmpty 
-                  ? [const DropdownMenuItem(value: null, child: Text('No Categories'))]
-                  : categories.map((cat) {
+                items: [
+                  ...categories.map((cat) {
                     return DropdownMenuItem(
                       value: cat.id, 
                       child: Row(
                         children: [
-                          Icon(IconData(int.tryParse(cat.iconCode) ?? 0xe57f, fontFamily: 'MaterialIcons')), // default invalid icon handling needed
+                          Icon(IconData(int.tryParse(cat.iconCode) ?? 0xe57f, fontFamily: 'MaterialIcons')), 
                           const SizedBox(width: 8),
                           Text(cat.name),
                         ],
                       )
                     );
                   }).toList(),
-                onChanged: (val) => setState(() => _categoryId = val),
+                  const DropdownMenuItem(
+                    value: 'add_new_custom_category',
+                    child: Row(
+                      children: [
+                        Icon(Icons.add_circle_outline, color: Colors.blue),
+                        SizedBox(width: 8),
+                        Text('Add new category +', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ],
+                onChanged: (val) {
+                  if (val == 'add_new_custom_category') {
+                    _showAddCategoryDialog();
+                  } else {
+                    setState(() => _categoryId = val);
+                  }
+                },
                  // Basic validation: require category
-                validator: (val) => val == null ? 'Select a category' : null,
+                validator: (val) {
+                   if (val == null || val == 'add_new_custom_category') return 'Select a category';
+                   return null;
+                },
               ),
               const SizedBox(height: 16),
 
@@ -157,6 +177,83 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     if (picked != null) {
       setState(() => _selectedDate = picked);
     }
+  }
+
+  void _showAddCategoryDialog() {
+    final nameController = TextEditingController();
+    int selectedColor = 0xFF4CAF50;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: const Text('Add Category'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                     TextField(
+                       controller: nameController,
+                       decoration: const InputDecoration(labelText: 'Category Name', border: OutlineInputBorder()),
+                     ),
+                     const SizedBox(height: 20),
+                     const Text('Select Color'),
+                     const SizedBox(height: 10),
+                     Wrap(
+                       spacing: 10,
+                       runSpacing: 10,
+                       children: [
+                         0xFFF44336, 0xFFE91E63, 0xFF9C27B0, 0xFF673AB7,
+                         0xFF3F51B5, 0xFF2196F3, 0xFF009688, 0xFF4CAF50,
+                         0xFFFFC107, 0xFFFF9800, 0xFFFF5722, 0xFF795548, 0xFF607D8B
+                       ].map((color) => GestureDetector(
+                         onTap: () => setDialogState(() => selectedColor = color),
+                         child: Container(
+                           width: 32, height: 32,
+                           decoration: BoxDecoration(
+                             color: Color(color),
+                             shape: BoxShape.circle,
+                             border: selectedColor == color ? Border.all(width: 3, color: Colors.black) : null,
+                           ),
+                         ),
+                       )).toList(),
+                     ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context), 
+                  child: const Text('Cancel')
+                ),
+                FilledButton(
+                  onPressed: () async {
+                    if (nameController.text.trim().isNotEmpty) {
+                      final newCat = CategoryModel(
+                        id: DateTime.now().millisecondsSinceEpoch.toString(),
+                        name: nameController.text.trim(),
+                        iconCode: '0xeac6', 
+                        budgetLimit: 0, 
+                        colorValue: selectedColor
+                      );
+                      await Provider.of<TransactionProvider>(context, listen: false).addCategory(newCat); 
+                      // Auto select the new category
+                      setState(() {
+                         _categoryId = newCat.id;
+                      });
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: const Text('Add'),
+                ),
+              ],
+            );
+          }
+        );
+      }
+    );
   }
 
   void _submitForm() {
