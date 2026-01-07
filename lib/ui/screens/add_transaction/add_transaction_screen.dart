@@ -67,10 +67,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> with Single
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('Add Transaction', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+        title: Text('Add Transaction', style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Colors.white)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Stack(
         children: [

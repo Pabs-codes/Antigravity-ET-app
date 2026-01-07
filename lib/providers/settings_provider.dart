@@ -19,7 +19,7 @@ class SettingsProvider with ChangeNotifier {
     'HKD': 'HK\$', 'KRW': '₩', 'AED': 'د.إ', 'LKR': 'Rs'
   };
 
-  bool get isDarkMode => _box.get(_darkModeKey, defaultValue: false);
+  bool get isDarkMode => _box.get(_darkModeKey, defaultValue: true);
   bool get isBiometricsEnabled => _box.get(_biometricsKey, defaultValue: false);
   String get currencyCode => _box.get(_currencyKey, defaultValue: 'USD');
   String get currencySymbol => currencySymbols[currencyCode] ?? '\$';
