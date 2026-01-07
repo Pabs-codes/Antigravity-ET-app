@@ -5,6 +5,10 @@ import '../../../providers/transaction_provider.dart';
 import '../../../data/models/transaction_type.dart';
 import '../../../core/app_theme.dart';
 import '../add_transaction/add_transaction_screen.dart';
+import 'history_screen.dart';
+import '../settings/settings_screen.dart';
+import '../../../core/services/csv_service.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -129,17 +133,64 @@ class DashboardScreen extends StatelessWidget {
                             _ActionButton(
                               icon: Icons.arrow_outward_rounded,
                               label: 'Transfer',
-                              onTap: () {}, // Placeholder
+                              onTap: () {
+                                // For now, transfer is just adding a transaction (maybe link to Add with specific type later)
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
+                                );
+                              },
                             ),
                             _ActionButton(
                               icon: Icons.history_rounded,
                               label: 'History',
-                              onTap: () {}, // Placeholder (or scroll down)
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const HistoryScreen()),
+                                );
+                              },
                             ),
                              _ActionButton(
                               icon: Icons.more_horiz_rounded,
                               label: 'More',
-                              onTap: () {}, // Placeholder
+                              onTap: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) => Container(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ListTile(
+                                          leading: const Icon(Icons.file_download),
+                                          title: const Text('Export to CSV'),
+                                          onTap: () async {
+                                            Navigator.pop(context);
+                                            final data = provider.transactions;
+                                            final csvData = CsvService.generateCsv(data);
+                                            final path = await CsvService.saveFile(csvData);
+                                            if (path != null) {
+                                               Share.shareXFiles([XFile(path)], text: 'My Financial Transactions');
+                                            }
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.settings),
+                                          title: const Text('Settings'),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -161,7 +212,12 @@ class DashboardScreen extends StatelessWidget {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {}, 
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const HistoryScreen()),
+                          );
+                        }, 
                         child: const Text('View All'),
                       ),
                     ],

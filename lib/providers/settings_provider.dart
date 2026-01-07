@@ -8,8 +8,15 @@ class SettingsProvider with ChangeNotifier {
   // Directly access the box from HiveService
   final _box = HiveService.settingsBox;
 
+  static const String _usernameKey = 'username';
+  static const String _pinCodeKey = 'pinCode';
+
   bool get isDarkMode => _box.get(_darkModeKey, defaultValue: false);
   bool get isBiometricsEnabled => _box.get(_biometricsKey, defaultValue: false);
+  
+  String? get username => _box.get(_usernameKey);
+  String? get pinCode => _box.get(_pinCodeKey);
+  bool get hasAccount => username != null && pinCode != null;
 
   Future<void> toggleTheme(bool value) async {
     await _box.put(_darkModeKey, value);
@@ -18,6 +25,12 @@ class SettingsProvider with ChangeNotifier {
 
   Future<void> toggleBiometrics(bool value) async {
     await _box.put(_biometricsKey, value);
+    notifyListeners();
+  }
+
+  Future<void> createAccount(String name, String pin) async {
+    await _box.put(_usernameKey, name);
+    await _box.put(_pinCodeKey, pin);
     notifyListeners();
   }
 }
