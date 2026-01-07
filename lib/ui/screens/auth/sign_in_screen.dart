@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/settings_provider.dart';
-import '../../core/app_theme.dart';
-import '../../core/services/auth_service.dart';
-import '../main_wrapper.dart';
+import '../../../providers/settings_provider.dart';
+import '../../../core/app_theme.dart';
+import '../../../core/services/auth_service.dart';
+import '../../main_wrapper.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});

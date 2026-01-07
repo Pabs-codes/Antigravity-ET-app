@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../providers/settings_provider.dart';
-import '../../core/services/auth_service.dart';
-import '../main_wrapper.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/settings_provider.dart';
+import '../../../core/services/auth_service.dart';
+import '../../main_wrapper.dart';
 import 'sign_in_screen.dart';
 import 'sign_up_screen.dart';
 
@@ -79,22 +80,7 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: _isAuthenticating
-            ? const CircularProgressIndicator()
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.lock, size: 64),
-                  const SizedBox(height: 20),
-                  const Text('Authentication Required'),
-                  const SizedBox(height: 20),
-                  FilledButton.icon(
-                    onPressed: _checkAuth,
-                    icon: const Icon(Icons.fingerprint),
-                    label: const Text('Unlock with Biometrics'),
-                  ),
-                ],
-              ),
+        child: CircularProgressIndicator(),
       ),
     );
   }

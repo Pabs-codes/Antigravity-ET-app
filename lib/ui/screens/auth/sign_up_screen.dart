@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/settings_provider.dart';
-import '../../core/app_theme.dart';
+import '../../../providers/settings_provider.dart';
+import '../../../core/app_theme.dart';
 import 'sign_in_screen.dart';
 
 class SignUpScreen extends StatefulWidget {

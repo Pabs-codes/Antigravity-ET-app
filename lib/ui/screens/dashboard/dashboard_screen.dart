@@ -167,12 +167,10 @@ class DashboardScreen extends StatelessWidget {
                                           title: const Text('Export to CSV'),
                                           onTap: () async {
                                             Navigator.pop(context);
-                                            final data = provider.transactions;
-                                            final csvData = CsvService.generateCsv(data);
-                                            final path = await CsvService.saveFile(csvData);
-                                            if (path != null) {
-                                               Share.shareXFiles([XFile(path)], text: 'My Financial Transactions');
-                                            }
+                                            await CsvService().exportTransactions(
+                                              provider.transactions,
+                                              provider.categories,
+                                            );
                                           },
                                         ),
                                         ListTile(
