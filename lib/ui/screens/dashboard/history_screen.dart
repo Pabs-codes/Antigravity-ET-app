@@ -119,17 +119,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final currency = NumberFormat.currency(symbol: settings.currencySymbol, decimalDigits: 0);
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Transaction History'),
-        backgroundColor: AppTheme.backgroundLight,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         actions: [
           Consumer<TransactionProvider>(
             builder: (context, provider, _) => IconButton(
               icon: Icon(Icons.filter_list_rounded, 
                 color: (_startDate != null || _endDate != null || _selectedCategoryId != null) 
                   ? AppTheme.accentGreen 
-                  : Colors.black),
+                  : Theme.of(context).iconTheme.color),
               onPressed: () => _showFilterDialog(context, provider.categories),
             ),
           ),
@@ -165,11 +165,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
               return Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.05),
+                      color: Colors.black.withOpacity(0.05),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),

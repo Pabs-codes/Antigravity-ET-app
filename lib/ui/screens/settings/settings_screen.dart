@@ -5,6 +5,7 @@ import '../../../providers/transaction_provider.dart';
 import '../../../core/services/csv_service.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../data/models/category_model.dart';
+import 'user_manual_screen.dart';
 import 'dart:math';
 
 class SettingsScreen extends StatelessWidget {
@@ -140,6 +141,23 @@ class SettingsScreen extends StatelessWidget {
             onTap: () => _showCurrencyDialog(context),
           ),
 
+          const Divider(),
+
+          // User Manual (New)
+          ListTile(
+            title: const Text('User Manual'),
+            subtitle: const Text('How to use the app'),
+            leading: const Icon(Icons.menu_book_rounded),
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => const UserManualScreen(),
+              );
+            },
+          ),
+          
           const Divider(),
 
           // Categories

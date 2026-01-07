@@ -22,7 +22,7 @@ class DashboardScreen extends StatelessWidget {
     final currency = NumberFormat.currency(symbol: settings.currencySymbol, decimalDigits: 0);
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         bottom: false, // Let list scroll behind floating nav
         child: Consumer<TransactionProvider>(
@@ -42,13 +42,14 @@ class DashboardScreen extends StatelessWidget {
                           Text(
                             'Welcome Back,',
                             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: Colors.grey[600],
+                              color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
                             ),
                           ),
                           Text(
                             'My Financials',
                             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
+                              color: Theme.of(context).textTheme.headlineSmall?.color,
                             ),
                           ),
                         ],
@@ -57,11 +58,11 @@ class DashboardScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                           color: Colors.white,
+                           color: Theme.of(context).canvasColor,
                            shape: BoxShape.circle,
-                           border: Border.all(color: Colors.grey.shade200),
+                           border: Border.all(color: Theme.of(context).dividerColor),
                         ),
-                        child: const Icon(Icons.notifications_none_rounded, color: Colors.black),
+                        child: Icon(Icons.notifications_none_rounded, color: Theme.of(context).iconTheme.color),
                       )
                     ],
                   ),
@@ -72,7 +73,7 @@ class DashboardScreen extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: AppTheme.accentDark,
+                      color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).cardColor : AppTheme.accentDark,
                       borderRadius: BorderRadius.circular(32),
                       boxShadow: [
                         BoxShadow(
@@ -205,10 +206,9 @@ class DashboardScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'Recent Transactions',
-                        style: TextStyle(
-                          fontSize: 18,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -244,11 +244,11 @@ class DashboardScreen extends StatelessWidget {
                       return Container(
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.05),
+                              color: Colors.black.withOpacity(0.05),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -272,7 +272,9 @@ class DashboardScreen extends StatelessWidget {
                           ),
                           title: Text(
                             tx.title, 
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.bold
+                            ),
                           ),
                           subtitle: Text(
                             DateFormat('MMM d, y').format(tx.date),
@@ -315,15 +317,15 @@ class _ActionButton extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: const BoxDecoration(
-              color: Colors.white,
+              color: Colors.white, // Always white to pop against dark card
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: AppTheme.accentDark, size: 22),
+            child: Icon(icon, color: const Color(0xFF1A1A1A), size: 22), // Always dark icon
           ),
           const SizedBox(height: 8),
           Text(
             label,
-            style: const TextStyle(color: Colors.white70, fontSize: 12),
+            style: const TextStyle(color: Colors.white70, fontSize: 12), // Always white text
           ),
         ],
       ),
